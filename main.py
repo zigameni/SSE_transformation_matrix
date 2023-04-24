@@ -19,44 +19,12 @@ def as_mesh(scene_or_mesh):
         mesh = scene_or_mesh
     return mesh
 
-def apply_transformation_matrix(array, transformation_matrix):
-    """
-    Applies a transformation matrix to an array of floats.
-
-    Parameters:
-    array (numpy.ndarray): The array to apply the transformation to.
-    transformation_matrix (numpy.ndarray): The transformation matrix to apply.
-
-    Returns:
-    numpy.ndarray: The transformed array.
-    """
-    # Ensure that the input array is a numpy array
-    array = np.array(array)
-    
-    # Ensure that the transformation matrix is a numpy array
-    transformation_matrix = np.array(transformation_matrix)
-    
-    # Apply the transformation matrix to the array
-    transformed_array = np.dot(transformation_matrix, array)
-    
-    return transformed_array
-
 model = trimesh.load("lamp.obj", force='mesh')
 model.show()
 
-
 # extract the vertices into a float buffer 
 vertex_buffer = np.ravel(model.vertices.view(np.ndarray)).astype(np.float32);
-print(f"Buffer size: {vertex_buffer.size}")
-print (vertex_buffer);
 
-# # The transformation matrix
-# transformation_matrix = np.array([
-# 2.0, 0.0, 0.0, 0.0,
-# 0.0, 2.0, 0.0, 0.0,
-# 0.0, 0.0, 2.0, 0.0,
-# 0.0, 0.0, 0.0, 1.0
-# ], dtype=np.float32)
 angle = math.pi/2.0;
 
 # Shear
@@ -74,6 +42,7 @@ transformation_matrix = np.array([
 0.0, 0.0, 0.0, 1.0
 ], dtype=np.float32)
 
+# rotate z axis
 transformation_matrix2 = np.array([
 math.cos(angle), -math.sin(angle), 0.0, 0.0,
 math.sin(angle), math.cos(angle), 0.0, 0.0,
@@ -84,10 +53,7 @@ math.sin(angle), math.cos(angle), 0.0, 0.0,
 
 # Transform the vertex buffer with your C processing function: 
 assignment.transform_vertices(vertex_buffer, transformation_matrix2)
-print("We got hertee")
 # Reassign the transformed vertices to the model object and visualize it: 
-print(vertex_buffer.size)
-print("We got here");
 model.vertices = vertex_buffer.reshape((-1, 3));
 model.show();
 
